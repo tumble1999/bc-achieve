@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BCAchieve
 // @namespace    https://bcmc.ga/authors/tumble/
-// @version      0.1.0.1
+// @version      0.1.2.3
 // @author       Tumble
 // @require      https://github.com/tumble1999/mod-utils/raw/master/mod-utils.js
 // @require      https://github.com/tumble1999/modial/raw/master/modial.js
@@ -52,51 +52,48 @@
 			createAchievement
 		}),
 		//Setup achivement list
-		achivementListPage = Critterguration.registerSettingsMenu(BCAchieve, () => {
-			achivementList.querySelectorAll("a").forEach(i => i.remove());
+		achievementListPage = Critterguration.registerSettingsMenu(BCAchieve, () => {
+			achievementList.querySelectorAll(".list-group-item").forEach(i => i.remove());
 
-			tasks.forEach(task => {
-				let status = "secondary",
-					value = completion[task.id] * task.amount || 0;
-				if (completion[task.id]) status = "primary";
-				if (completion[task.id] == task.amount) status = "success";
-				achivementList.addItem({
+			tasks.sort((a, b) => (completion[b.id] || 0) / b.amount - (completion[a.id] || 0) / a.amount).forEach(task => {
+
+				let status = "secondary";
+				if (!!completion[task.id]) status = "primary";
+				if (completion[task.id] >= task.amount) status = "success";
+				if (task.hidden && status != "success") return;
+				achievementList.addItem({
 					name: task.name,
 					color: status,
 					description: task.description,
-					footer: task.mod.name,
-					corner: value + "/" + task.amount,
-					badge: completion[task.id] == 1 ? "Done" : null
+					footer: task.author || task.mod.name,
+					corner: (completion[task.id] || 0) + "/" + task.amount,
+					badge: completion[task.id] == task.amount ? "Done" : null,
+					active: !!completion[task.id]
 				});
 
 			});
 		}),
-		achivementList = achivementListPage.createListGroup("Achivements");
+		achievementList = achievementListPage.createListGroup("Achivements");
 
-	function createAchievement({
-		mod,
-		id,
-		name,
-		description,
-		icon,
-		amount = 1,
-	}) {
-		let task = {
-			mod, name, description, icon, amount,
-			id: mod.id + "_" + (id || TumbleMod.camelize(name))
-		};
+	function createAchievement(task) {
+		task.id = task.mod.id + "_" + (task.id || TumbleMod.camelize(task.name));
+		if (!task.amount) task.amount = 1;
 		tasks.push(task);
 
 		task.achieve = function (amount = 1) {
 			if (typeof completion[task.id] != "number") completion[task.id] = 0;
-			completion[task.id] += amount / task.amount;
-			if (completion[task.id] == 1)
+			completion[task.id] += amount;
+			if (completion[task.id] > task.amount) completion[task.id] = task.amount;
+			if (completion[task.id] == task.amount)
 				BCNotify.notify({
 					mod: BCAchieve,
-					title: name + (task.amount == 1 ? "" : " (" + completion[task.id] * task.amount + "/" + task.amount + ")"),
-					body: description,
-					icon
+					title: task.name + (task.amount == 1 ? "" : " (" + completion[task.id] + "/" + task.amount + ")"),
+					body: task.description,
+					icon: task.icon
 				});
+		};
+		task.set = function (amount) {
+			task.achieve(amount - completion[task.id]);
 		};
 
 		return task;
