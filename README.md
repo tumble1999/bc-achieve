@@ -6,20 +6,20 @@
 
 ## Usage
 ```js
-createAchievement({
+BCAchieve.createAchievement({
 	mod: BCAchieve,
 	name: "Test Achivement",
 	description: "Test the achivement system."
 });
 
-createAchievement({
+BCAchieve.createAchievement({
 	mod: BCAchieve,
 	name: "Test Incremental Achivement",
 	description: "Test the achivement system.",
 	amount: 5
 });
 
-createAchievement({
+BCAchieve.createAchievement({
 	mod: BCAchieve,
 	name: "Test Image Achivement",
 	description: "Test the achivement system.",
