@@ -43,7 +43,7 @@
 
 	let tasks = [], completion = {},
 		BCAchieve = new TumbleMod({
-			id: "bc-achieve",
+			id: "bcAchieve",
 			abriv: "bca",
 			name: "Achivements",
 			author: "Tumble",
