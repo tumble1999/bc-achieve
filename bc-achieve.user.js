@@ -20,7 +20,7 @@
 
 	const uWindow = typeof unsafeWindow != 'undefined' ? unsafeWindow : window;
 
-	if (uWindow.Achievements)
+	if (uWindow.BCAchieve)
 		return;
 
 	let deps = [
