@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BCAchieve
 // @namespace    https://bcmc.ga/authors/tumble/
-// @version      0.1.3.4
+// @version      0.1.4.5
 // @author       Tumble
 // @require      https://github.com/tumble1999/mod-utils/raw/master/mod-utils.js
 // @require      https://github.com/tumble1999/modial/raw/master/modial.js
@@ -78,7 +78,7 @@
 					description: task.description,
 					footer: task.author || task.mod.name,
 					corner: Math.round(task.completion()) + "/" + task.amount,
-					badge: task.completion() == task.amount ? "Done" : null,
+					badge: task.achieved ? "Done" : null,
 					active: !!task.completion()
 				});
 
@@ -100,7 +100,7 @@
 
 		task.achieve = function (amount = 1) {
 			if (typeof task.completion() != "number") completion[task.id] = 0;
-			if (!task.achieved || task.completion() == 1) completion[task.id] += amount;
+			if (!task.completion() == 1 && !task.achieved) completion[task.id] += amount;
 			// save any potential changes
 			save();
 
@@ -110,7 +110,7 @@
 				task.achieved = true;
 				BCNotify.notify({
 					mod: BCAchieve,
-					title: task.name + (task.amount == 1 ? "" : " (" + math.round(task.completion()) + "/" + task.amount + ")"),
+					title: task.name + (task.amount == 1 ? "" : " (" + Math.round(task.completion()) + "/" + task.amount + ")"),
 					body: task.description,
 					icon: task.icon
 				});
