@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BCAchieve
 // @namespace    https://bcmc.ga/authors/tumble/
-// @version      0.1.4.5
+// @version      0.1.5.6
 // @author       Tumble
 // @require      https://github.com/tumble1999/mod-utils/raw/master/mod-utils.js
 // @require      https://github.com/tumble1999/modial/raw/master/modial.js
@@ -100,7 +100,7 @@
 
 		task.achieve = function (amount = 1) {
 			if (typeof task.completion() != "number") completion[task.id] = 0;
-			if (!task.completion() == 1 && !task.achieved) completion[task.id] += amount;
+			if (!task.completion() == 1 || !task.achieved) completion[task.id] += amount;
 			// save any potential changes
 			save();
 
